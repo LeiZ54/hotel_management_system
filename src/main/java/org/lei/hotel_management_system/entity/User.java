@@ -33,13 +33,7 @@ public class User {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
-
-    @Column(nullable = false)
-    private LocalDateTime createdAt;
-
-    @Column(nullable = false)
-    private LocalDateTime updatedAt;
 }
 enum Role {
-    CUSTOMER, STAFF, ADMIN
+    STAFF, ADMIN
 }
