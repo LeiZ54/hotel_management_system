@@ -1,6 +1,6 @@
 package org.lei.hotel_management_system.controller;
 
-import org.lei.hotel_management_system.entity.User;
+import org.lei.hotel_management_system.entity.Users;
 import org.lei.hotel_management_system.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,9 +17,10 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @GetMapping
-    public ResponseEntity<List<User>> getAllUsers() {
-        List<User> users = userService.getAllUsers();
+    @GetMapping("/list")
+    public ResponseEntity<List<Users>> getAllUsers() {
+        List<Users> users = userService.getAllUsers();
         return ResponseEntity.ok(users);
     }
+
 }
