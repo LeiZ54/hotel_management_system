@@ -26,6 +26,7 @@ public class AddDataService {
     private OrdersRepository ordersRepository;
 
     public void add() {
+
         userRepository.save(new Users("LeiZ", "12345", "lei zhu", "piggy@123.com", Role.ADMIN));
         userRepository.save(new Users("fatty", "12345", "Yuheng Xia", "fatty@123.com", Role.ADMIN));
         userRepository.save(new Users("Song", "12345", "Zhiyao", "zhiyao@123.com", Role.STAFF));
