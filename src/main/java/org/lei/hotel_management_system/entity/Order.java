@@ -9,12 +9,15 @@ import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
-public class Orders {
+@Table(name = "orders")
+public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -37,17 +40,21 @@ public class Orders {
     @Column(nullable = false)
     private Status status;
 
+    @Column(nullable = false, unique = true)
+    private String orderNumber;
+
     @CreatedDate
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
-    public Orders(String roomNumber, String customerName, String customerEmail, LocalDate checkInDate, LocalDate checkOutDate, Status status) {
+    public Order(String roomNumber, String customerName, String customerEmail, LocalDate checkInDate, LocalDate checkOutDate, String orderNumber) {
         this.roomNumber = roomNumber;
         this.customerName = customerName;
         this.customerEmail = customerEmail;
         this.checkInDate = checkInDate;
         this.checkOutDate = checkOutDate;
-        this.status = status;
+        this.status = Status.CREATED;
+        this.orderNumber = orderNumber;
         this.createdAt = LocalDateTime.now();
     }
 }

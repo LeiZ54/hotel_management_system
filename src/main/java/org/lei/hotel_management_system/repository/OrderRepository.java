@@ -1,19 +1,19 @@
 package org.lei.hotel_management_system.repository;
 
+
 import jakarta.transaction.Transactional;
-import org.lei.hotel_management_system.entity.Room;
+import org.lei.hotel_management_system.entity.Order;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface RoomRepository extends JpaRepository<Room, Integer> {
-
+public interface OrderRepository extends JpaRepository<Order, Integer> {
     @Modifying
     @Transactional
-    @Query(value = "TRUNCATE TABLE rooms", nativeQuery = true)
+    @Query(value = "TRUNCATE TABLE orders", nativeQuery = true)
     void truncateTable();
 
-    Room getByRoomNumber(String roomNumber);
+    Order findByOrderNumber(String orderNumber);
 }
