@@ -1,16 +1,21 @@
 package org.lei.hotel_management_system.service;
 
+import jakarta.persistence.criteria.*;
 import org.lei.hotel_management_system.DTO.OrderCreateDTO;
+import org.lei.hotel_management_system.DTO.OrderDetailsDTO;
 import org.lei.hotel_management_system.DTO.OrderUpdateDTO;
 import org.lei.hotel_management_system.entity.Order;
 import org.lei.hotel_management_system.enums.Status;
 import org.lei.hotel_management_system.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Service
@@ -63,6 +68,35 @@ public class OrderServiceImpl implements OrderService {
         updateOrder(updateOrder);
     }
 
+    @Override
+    public List<OrderDetailsDTO> findAllOrders() {
+        return orderRepository.findAll().stream().map(this::convertOrderToOrderDetailsDTO).toList();
+    }
+
+    @Override
+    public List<OrderDetailsDTO> list(String orderNumber, String customerName, String customerEmail, Status status) {
+        return orderRepository.findAll((Specification<Order>) (root, query, cb) -> {
+            List<Predicate> predicates = new ArrayList<>();
+
+            if (orderNumber != null && !orderNumber.isEmpty()) {
+                predicates.add(cb.equal(root.get("orderNumber"), orderNumber));
+            }
+
+            if (customerName != null && !customerName.isEmpty()) {
+                predicates.add(cb.like(root.get("customerName"), "%" + customerName + "%"));
+            }
+
+            if (customerEmail != null && !customerEmail.isEmpty()) {
+                predicates.add(cb.equal(root.get("customerEmail"), customerEmail));
+            }
+
+            if (customerEmail != null && !customerEmail.isEmpty()) {
+                predicates.add(cb.equal(root.get("status"), status));
+            }
+            return cb.and(predicates.toArray(new Predicate[0]));
+        }).stream().map(this::convertOrderToOrderDetailsDTO).toList();
+    }
+
 
     @Override
     public Order convertOrderDTOToOrder(OrderCreateDTO orderCreateDTO) {
@@ -73,6 +107,20 @@ public class OrderServiceImpl implements OrderService {
                 LocalDate.parse(orderCreateDTO.getCheckInDate()),
                 LocalDate.parse(orderCreateDTO.getCheckOutDate()),
                 generateOrderNumber()
+        );
+    }
+
+    @Override
+    public OrderDetailsDTO convertOrderToOrderDetailsDTO(Order order) {
+        return new OrderDetailsDTO(
+                order.getRoomNumber(),
+                order.getCustomerName(),
+                order.getCustomerEmail(),
+                order.getCheckInDate(),
+                order.getCheckOutDate(),
+                order.getStatus(),
+                order.getOrderNumber(),
+                order.getCreatedAt()
         );
     }
 

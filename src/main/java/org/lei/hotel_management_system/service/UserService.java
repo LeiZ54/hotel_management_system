@@ -24,7 +24,7 @@ public interface UserService extends UserDetailsService {
 
     UserDetailsDTO getUserDetails(String username);
 
-    List<UserDetailsDTO> findAllUsers();
+    List<UserDetailsDTO> list(String username, String email, String realName, Role role);
 
     String getCurrentUserToken();
 

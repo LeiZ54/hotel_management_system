@@ -1,7 +1,6 @@
 package org.lei.hotel_management_system.service;
 
 import org.lei.hotel_management_system.DTO.OrderCreateDTO;
-import org.lei.hotel_management_system.entity.Order;
 import org.lei.hotel_management_system.entity.Room;
 import org.lei.hotel_management_system.entity.User;
 import org.lei.hotel_management_system.enums.Role;

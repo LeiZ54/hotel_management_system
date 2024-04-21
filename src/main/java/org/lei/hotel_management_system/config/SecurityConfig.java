@@ -31,10 +31,6 @@ public class SecurityConfig {
         http.authorizeHttpRequests(auth -> auth
                 .requestMatchers("/auth/login", "/auth/register", "/addData").permitAll()
                 .anyRequest().authenticated());
-//        http.formLogin(form -> form.
-//                loginPage("/login").permitAll()
-//                .loginProcessingUrl("/auth/login")
-//                .defaultSuccessUrl("/index");
         http.csrf(AbstractHttpConfigurer::disable);
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 

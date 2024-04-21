@@ -1,5 +1,6 @@
 package org.lei.hotel_management_system.service;
 
+import jakarta.persistence.criteria.Predicate;
 import jakarta.servlet.http.HttpServletRequest;
 import org.lei.hotel_management_system.DTO.UserDetailsDTO;
 import org.lei.hotel_management_system.DTO.UserRoleUpdateDTO;
@@ -9,6 +10,7 @@ import org.lei.hotel_management_system.enums.Role;
 import org.lei.hotel_management_system.repository.UserRepository;
 import org.lei.hotel_management_system.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -76,8 +79,27 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserDetailsDTO> findAllUsers() {
-        return userRepository.findAll().stream().map(this::convertUserToUserDetailsDTO).toList();
+    public List<UserDetailsDTO> list(String username, String email, String realName, Role role) {
+        return userRepository.findAll((Specification<User>) (root, query, cb) -> {
+            List<Predicate> predicates = new ArrayList<>();
+
+            if (username != null && !username.isEmpty()) {
+                predicates.add(cb.like(root.get("username"), "%" + username + "%"));
+            }
+
+            if (email != null && !email.isEmpty()) {
+                predicates.add(cb.like(root.get("email"), "%" + email + "%"));
+            }
+
+            if (realName != null && !realName.isEmpty()) {
+                predicates.add(cb.like(root.get("realName"), "%" + realName + "%"));
+            }
+
+            if (role != null) {
+                predicates.add(cb.equal(root.get("role"), role));
+            }
+            return cb.and(predicates.toArray(new Predicate[0]));
+        }).stream().map(this::convertUserToUserDetailsDTO).toList();
     }
 
     @Override

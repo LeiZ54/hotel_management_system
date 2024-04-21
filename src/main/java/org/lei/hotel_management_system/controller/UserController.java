@@ -2,6 +2,7 @@ package org.lei.hotel_management_system.controller;
 
 import org.lei.hotel_management_system.DTO.UserRoleUpdateDTO;
 import org.lei.hotel_management_system.DTO.UserUpdateDTO;
+import org.lei.hotel_management_system.enums.Role;
 import org.lei.hotel_management_system.service.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -15,9 +16,9 @@ public class UserController {
     private UserServiceImpl userService;
 
     @GetMapping("/list")
-    public ResponseEntity<?> userList() {
+    public ResponseEntity<?> userList(@RequestParam String username, @RequestParam String email, @RequestParam String realName, @RequestParam Role role) {
         try {
-            return ResponseEntity.ok(userService.findAllUsers());
+            return ResponseEntity.ok(userService.list(username, email, realName, role));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
