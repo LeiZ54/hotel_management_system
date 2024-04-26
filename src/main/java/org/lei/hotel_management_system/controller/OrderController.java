@@ -2,7 +2,6 @@ package org.lei.hotel_management_system.controller;
 
 import org.lei.hotel_management_system.DTO.OrderCreateDTO;
 import org.lei.hotel_management_system.entity.Order;
-import org.lei.hotel_management_system.enums.Status;
 import org.lei.hotel_management_system.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

@@ -48,7 +48,7 @@ public class OrderServiceImpl implements OrderService {
     public void checkin(String orderNumber) {
         OrderUpdateDTO updateOrder = new OrderUpdateDTO();
         updateOrder.setOrderNumber(orderNumber);
-        updateOrder.setStatus(Status.CHECKEDIN);
+        updateOrder.setStatus(Status.CHECKED);
         updateOrder(updateOrder);
     }
 

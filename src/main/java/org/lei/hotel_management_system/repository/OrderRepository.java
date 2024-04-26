@@ -3,7 +3,6 @@ package org.lei.hotel_management_system.repository;
 
 import jakarta.transaction.Transactional;
 import org.lei.hotel_management_system.entity.Order;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
