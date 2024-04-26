@@ -21,7 +21,7 @@ public interface OrderService {
 
     List<OrderDetailsDTO> findAllOrders();
 
-    List<OrderDetailsDTO> list(String orderNumber, String customerName, String customerEmail, Status status);
+    List<OrderDetailsDTO> list(String orderNumber, String customerName, String customerEmail, String status);
 
     Order convertOrderDTOToOrder(OrderCreateDTO orderCreateDTO);
 

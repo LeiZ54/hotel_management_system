@@ -4,7 +4,6 @@ import org.lei.hotel_management_system.DTO.UserDetailsDTO;
 import org.lei.hotel_management_system.DTO.UserRoleUpdateDTO;
 import org.lei.hotel_management_system.DTO.UserUpdateDTO;
 import org.lei.hotel_management_system.entity.User;
-import org.lei.hotel_management_system.enums.Role;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.List;
@@ -20,14 +19,9 @@ public interface UserService extends UserDetailsService {
 
     User getByEmail(String email);
 
-    User getByUsernameAndPassword(String username, String password);
-
     UserDetailsDTO getUserDetails(String username);
 
-    List<UserDetailsDTO> list(String username, String email, String realName, Role role);
+    List<UserDetailsDTO> list(String username, String email, String phoneNumber, String realName, List<String> roles);
 
-    String getCurrentUserToken();
-
-    Role getCurrentUserRole();
-
+    User getCurrentUser();
 }

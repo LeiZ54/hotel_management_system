@@ -1,5 +1,6 @@
 package org.lei.hotel_management_system.service;
 
+import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.servlet.http.HttpServletRequest;
 import org.lei.hotel_management_system.DTO.UserDetailsDTO;
@@ -44,30 +45,29 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUser(String username) {
-        if (!getCurrentUserRole().equals(Role.ADMIN))
+        if (!getCurrentUser().getRole().equals(Role.ADMIN))
             throw new RuntimeException("You do not have permission to delete this user!");
         User user = userRepository.findByUsername(username);
         if (user == null) throw new RuntimeException("User not found!");
-        if (username.equals(jwtUtil.getUsernameFromToken(getCurrentUserToken())))
+        if (username.equals(getCurrentUser().getUsername()))
             throw new RuntimeException("You cannot delete yourself!");
         userRepository.delete(user);
     }
 
     @Override
     public void updateUser(UserUpdateDTO updateUser) {
-        String username = jwtUtil.getUsernameFromToken(getCurrentUserToken());
-        User user = userRepository.findByUsername(username);
-        if (!updateUser.getUsername().equals(username))
-            throw new RuntimeException("You don't have permission to update this user!");
-        if (getByEmail(updateUser.getNewEmail()) != null && !updateUser.getNewEmail().equals(user.getEmail()))
+        User currentUser = getCurrentUser();
+        if (getByEmail(updateUser.getEmail()) != null && !updateUser.getEmail().equals(currentUser.getEmail()))
             throw new RuntimeException("Email already exists!");
-        if (updateUser.getNewEmail() != null) user.setEmail(updateUser.getNewEmail());
-        if (updateUser.getNewRealName() != null) user.setRealName(updateUser.getNewRealName());
+        if (updateUser.getEmail() != null) currentUser.setEmail(updateUser.getEmail());
+        if (updateUser.getPhoneNumber() != null) currentUser.setPhoneNumber(updateUser.getPhoneNumber());
+        if (updateUser.getRealName() != null) currentUser.setRealName(updateUser.getRealName());
+        userRepository.save(currentUser);
     }
 
     @Override
     public void updateUserRole(UserRoleUpdateDTO updateRoleUser) {
-        if (!getCurrentUserRole().equals(Role.ADMIN))
+        if (!getCurrentUser().getRole().equals(Role.ADMIN))
             throw new RuntimeException("You do not have permission to update this user's role!");
         User user = userRepository.findByUsername(updateRoleUser.getUsername());
         user.setRole(updateRoleUser.getRole());
@@ -75,11 +75,16 @@ public class UserServiceImpl implements UserService {
     }
 
     public UserDetailsDTO getUserDetails(String username) {
+        if (getCurrentUser().getRole().equals(Role.CUSTOMER) && !username.equals(getCurrentUser().getUsername())) {
+            throw new RuntimeException("You cannot access this user!");
+        }
         return convertUserToUserDetailsDTO((User) loadUserByUsername(username));
     }
 
     @Override
-    public List<UserDetailsDTO> list(String username, String email, String realName, Role role) {
+    public List<UserDetailsDTO> list(String username, String email, String phoneNumber, String realName, List<String> roles) {
+        if (getCurrentUser().getRole().equals(Role.CUSTOMER))
+            throw new RuntimeException("You cannot access user list!");
         return userRepository.findAll((Specification<User>) (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
 
@@ -91,40 +96,34 @@ public class UserServiceImpl implements UserService {
                 predicates.add(cb.like(root.get("email"), "%" + email + "%"));
             }
 
+            if (phoneNumber != null && !phoneNumber.isEmpty()) {
+                predicates.add(cb.like(root.get("phoneNumber"), "%" + phoneNumber + "%"));
+            }
+
             if (realName != null && !realName.isEmpty()) {
                 predicates.add(cb.like(root.get("realName"), "%" + realName + "%"));
             }
 
-            if (role != null) {
-                predicates.add(cb.equal(root.get("role"), role));
+            if (roles != null && !roles.isEmpty()) {
+                CriteriaBuilder.In<String> roleIn = cb.in(root.get("role"));
+                roles.forEach(roleIn::value);
+                predicates.add(roleIn);
             }
             return cb.and(predicates.toArray(new Predicate[0]));
         }).stream().map(this::convertUserToUserDetailsDTO).toList();
     }
 
     @Override
+    public User getCurrentUser() {
+        HttpServletRequest request = ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes())).getRequest();
+        String token = request.getHeader("Authorization");
+        System.out.println(token);
+        return userRepository.findByUsername(jwtUtil.getUsernameFromToken(token));
+    }
+
+    @Override
     public User getByEmail(String email) {
         return userRepository.findByEmail(email);
-    }
-
-    @Override
-    public User getByUsernameAndPassword(String username, String password) {
-        User user = userRepository.findByUsername(username);
-        if (user != null && passwordEncoder.matches(password, user.getPassword())) {
-            return user;  // password matches
-        }
-        return null;
-    }
-
-    public String getCurrentUserToken() {
-        HttpServletRequest request = ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes())).getRequest();
-        System.out.println(request.getHeader("Authorization"));
-        return request.getHeader("Authorization").substring(7);
-    }
-
-    @Override
-    public Role getCurrentUserRole() {
-        return userRepository.findByUsername(jwtUtil.getUsernameFromToken(getCurrentUserToken())).getRole();
     }
 
     /**
@@ -134,7 +133,7 @@ public class UserServiceImpl implements UserService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByUsername(username);
         if (user == null) {
-            throw new UsernameNotFoundException("User not found");
+            throw new UsernameNotFoundException("User not found!");
         }
         return user;
     }
@@ -143,6 +142,7 @@ public class UserServiceImpl implements UserService {
         UserDetailsDTO userListDTO = new UserDetailsDTO();
         userListDTO.setUsername(user.getUsername());
         userListDTO.setEmail(user.getEmail());
+        userListDTO.setPhoneNumber(user.getPhoneNumber());
         userListDTO.setRealName(user.getRealName());
         userListDTO.setRole(user.getRole());
         return userListDTO;

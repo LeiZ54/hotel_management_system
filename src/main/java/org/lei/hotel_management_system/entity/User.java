@@ -32,16 +32,20 @@ public class User implements UserDetails {
     @Column(nullable = false, unique = true)
     private String email;
 
+    @Column(nullable = false)
+    private String phoneNumber;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
 
-    public User(String username, String password, String realName, String email) {
+    public User(String username, String password, String realName, String email, String phoneNumber) {
         this.username = username;
         this.password = password;
         this.realName = realName;
         this.email = email;
-        this.role = Role.STAFF;
+        this.phoneNumber = phoneNumber;
+        this.role = Role.CUSTOMER;
     }
 
     @Override

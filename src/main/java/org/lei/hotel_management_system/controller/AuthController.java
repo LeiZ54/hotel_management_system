@@ -19,19 +19,11 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody UserLoginDTO loginUser) {
-        try {
-            return ResponseEntity.ok(authService.login(loginUser));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        return ResponseEntity.ok(authService.login(loginUser));
     }
 
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody @Valid UserRegisterDTO registerUser) {
-        try {
-            return ResponseEntity.ok(authService.register(registerUser));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        return ResponseEntity.ok(authService.register(registerUser));
     }
 }

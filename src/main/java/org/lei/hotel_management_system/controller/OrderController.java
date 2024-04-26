@@ -16,59 +16,30 @@ public class OrderController {
 
     @PostMapping("/create")
     public ResponseEntity<?> orderCreate(@RequestBody OrderCreateDTO createOrder) {
-        try {
-            Order order = orderService.addOrder(orderService.convertOrderDTOToOrder(createOrder));
-            return ResponseEntity.ok("Order:" + order.getOrderNumber() + " successfully!");
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        Order order = orderService.addOrder(orderService.convertOrderDTOToOrder(createOrder));
+        return ResponseEntity.ok("Order:" + order.getOrderNumber() + " successfully!");
     }
 
     @PostMapping("/checkin")
     public ResponseEntity<?> checkin(@RequestParam String orderNumber) {
-        try {
-            orderService.checkin(orderNumber);
-            return ResponseEntity.ok("Order:" + orderNumber + " has been checkin successfully!");
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        orderService.checkin(orderNumber);
+        return ResponseEntity.ok("Order:" + orderNumber + " has been checkin successfully!");
     }
 
     @PostMapping("/checkout")
     public ResponseEntity<?> checkout(@RequestParam String orderNumber) {
-        try {
-            orderService.checkout(orderNumber);
-            return ResponseEntity.ok("Order:" + orderNumber + " has been checkout successfully!");
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        orderService.checkout(orderNumber);
+        return ResponseEntity.ok("Order:" + orderNumber + " has been checkout successfully!");
     }
 
     @PostMapping("/cancel")
     public ResponseEntity<?> cancel(@RequestParam String orderNumber) {
-        try {
-            orderService.cancel(orderNumber);
-            return ResponseEntity.ok("Order:" + orderNumber + " has been canceled successfully!");
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        orderService.cancel(orderNumber);
+        return ResponseEntity.ok("Order:" + orderNumber + " has been canceled successfully!");
     }
 
-//    @GetMapping("/list")
-//    public ResponseEntity<?> listOrders() {
-//        try {
-//            return ResponseEntity.ok(orderService.findAllOrders());
-//        } catch (Exception e) {
-//            return ResponseEntity.badRequest().body(e.getMessage());
-//        }
-//    }
-
     @GetMapping("/list")
-    public ResponseEntity<?> listOrders(@RequestParam String orderNumber, @RequestParam String customerName, @RequestParam String customerEmail, @RequestParam Status status) {
-        try {
-            return ResponseEntity.ok(orderService.list(orderNumber, customerName, customerEmail, status));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<?> listOrders(@RequestParam String orderNumber, @RequestParam String customerName, @RequestParam String customerEmail, @RequestParam String status) {
+        return ResponseEntity.ok(orderService.list(orderNumber, customerName, customerEmail, status));
     }
 }

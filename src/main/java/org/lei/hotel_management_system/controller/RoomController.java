@@ -18,22 +18,12 @@ public class RoomController {
     //暂时回传room实体的全部内容，以后再增加回传内容
     @GetMapping("/show")
     public ResponseEntity<?> show(String roomNumber) {
-        try {
-            return ResponseEntity.ok(roomService.getByRoomNumber(roomNumber));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-
+        return ResponseEntity.ok(roomService.getByRoomNumber(roomNumber));
     }
 
     //暂时回传room实体的全部内容，以后再增加回传内容
     @GetMapping("/list")
     public ResponseEntity<?> list(@RequestParam String roomNumber, @RequestParam Type type, @RequestParam Boolean available) {
-        try {
-            return ResponseEntity.ok(roomService.list(roomNumber, type, available));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        return ResponseEntity.ok(roomService.list(roomNumber, type, available));
     }
-
 }

@@ -5,6 +5,7 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import org.lei.hotel_management_system.DTO.TokenDTO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -28,6 +29,10 @@ public class JwtUtil {
                 .sign(algorithm);
     }
 
+    public TokenDTO createTokenJson(String username) {
+        return new TokenDTO(createToken(username));
+    }
+
     /**
      * 验证 Token 并返回解码后的 JWT
      *
@@ -40,7 +45,8 @@ public class JwtUtil {
         JWTVerifier verifier = JWT.require(algorithm)
                 .withIssuer("auth0")
                 .build(); // 生成验证器
-        return verifier.verify(token.substring(7));
+        String[] s = token.split(" ");
+        return verifier.verify(s[s.length - 1]);
     }
 
     /**
@@ -50,8 +56,12 @@ public class JwtUtil {
      * @return 用户名
      */
     public String getUsernameFromToken(String token) {
-        DecodedJWT jwt = verifyToken(token);
-        return jwt.getClaim("username").asString();
+        try {
+            DecodedJWT jwt = verifyToken(token);
+            return jwt.getClaim("username").asString();
+        } catch (JWTVerificationException e) {
+            throw new JWTVerificationException(e.getMessage());
+        }
     }
 
 }

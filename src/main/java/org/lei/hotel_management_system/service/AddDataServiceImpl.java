@@ -11,8 +11,6 @@ import org.lei.hotel_management_system.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-
 @Service
 public class AddDataServiceImpl implements AddDataService {
     @Autowired
@@ -33,13 +31,15 @@ public class AddDataServiceImpl implements AddDataService {
         roomRepository.truncateTable();
         ordersRepository.truncateTable();
 
-        User adminUser = new User("LeiZ", "12345", "lei zhu", "piggy@123.com");
+        User adminUser = new User("LeiZ", "12345", "lei zhu", "piggy@123.com", "8575447940");
         adminUser.setRole(Role.ADMIN);
         userService.addUser(adminUser);
-        userService.addUser(new User("fatty", "12345", "Yuheng Xia", "fatty@123.com"));
-        userService.addUser(new User("Song", "12345", "Zhiyao", "zhiyao@123.com"));
-        userService.addUser(new User("Big", "12345", "Boyuan", "boyuan@123.com"));
-        userService.addUser(new User("hahaha", "12345", "kaixin", "happy@123.com"));
+        User staffUser = new User("fatty", "12345", "Yuheng Xia", "fatty@123.com", "8575447941");
+        staffUser.setRole(Role.STAFF);
+        userService.addUser(staffUser);
+        userService.addUser(new User("Song", "12345", "Zhiyao", "zhiyao@123.com", "8575447942"));
+        userService.addUser(new User("Big", "12345", "Boyuan", "boyuan@123.com", "8575447943"));
+        userService.addUser(new User("hahaha", "12345", "kaixin", "happy@123.com", "8575447944"));
 
         roomService.addRoom(new Room("1001", Type.SINGLE));
         roomService.addRoom(new Room("1002", Type.SINGLE));
