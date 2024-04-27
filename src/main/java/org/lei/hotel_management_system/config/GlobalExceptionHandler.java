@@ -26,7 +26,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler({Exception.class})
     public ResponseEntity<?> handleExceptions(Exception e) {
-        return ResponseEntity.badRequest().body(new ErrorDTO(e.getMessage()));
+        return ResponseEntity.badRequest().body(e.getMessage());
     }
 }
 

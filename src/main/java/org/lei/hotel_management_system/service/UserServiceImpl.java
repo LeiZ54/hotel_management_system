@@ -76,7 +76,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDetailsDTO getCurrentUserDetails() {
-        return convertUserToUserDetailsDTO(getCurrentUser());
+        try {
+            return convertUserToUserDetailsDTO(getCurrentUser());
+        }catch (Exception e){
+            throw new RuntimeException("Invalid token!");
+        }
     }
 
     @Override
@@ -115,7 +119,6 @@ public class UserServiceImpl implements UserService {
     public User getCurrentUser() {
         HttpServletRequest request = ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes())).getRequest();
         String token = request.getHeader("Authorization");
-        System.out.println(token);
         return userRepository.findByUsername(jwtUtil.getUsernameFromToken(token));
     }
 
