@@ -2,6 +2,7 @@ package org.lei.hotel_management_system.service;
 
 import org.lei.hotel_management_system.DTO.OrderCreateDTO;
 import org.lei.hotel_management_system.DTO.OrderDetailsDTO;
+import org.lei.hotel_management_system.DTO.OrderListDTO;
 import org.lei.hotel_management_system.DTO.OrderUpdateDTO;
 import org.lei.hotel_management_system.entity.Order;
 
@@ -18,12 +19,9 @@ public interface OrderService {
 
     void cancel(String orderNumber);
 
-    List<OrderDetailsDTO> findAllOrders();
+    List<OrderListDTO> list(String orderNumber, String roomNumber, String username, String customerName, String customerEmail, String status, String checkInDate, String checkOutDate, Integer page);
 
-    List<OrderDetailsDTO> list(String orderNumber, String customerName, String customerEmail, String status);
+    OrderDetailsDTO getOrderDetails(String orderNumber);
 
     Order convertOrderDTOToOrder(OrderCreateDTO orderCreateDTO);
-
-    OrderDetailsDTO convertOrderToOrderDetailsDTO(Order order);
-
 }

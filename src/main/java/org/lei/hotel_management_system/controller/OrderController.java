@@ -1,5 +1,6 @@
 package org.lei.hotel_management_system.controller;
 
+import org.lei.hotel_management_system.DTO.OkDTO;
 import org.lei.hotel_management_system.DTO.OrderCreateDTO;
 import org.lei.hotel_management_system.entity.Order;
 import org.lei.hotel_management_system.service.OrderService;
@@ -16,29 +17,42 @@ public class OrderController {
     @PostMapping("/create")
     public ResponseEntity<?> orderCreate(@RequestBody OrderCreateDTO createOrder) {
         Order order = orderService.addOrder(orderService.convertOrderDTOToOrder(createOrder));
-        return ResponseEntity.ok("Order:" + order.getOrderNumber() + " successfully!");
+        return ResponseEntity.ok(new OkDTO("Order:" + order.getOrderNumber() + "has been created successfully!"));
     }
 
     @PostMapping("/checkin")
     public ResponseEntity<?> checkin(@RequestParam String orderNumber) {
         orderService.checkin(orderNumber);
-        return ResponseEntity.ok("Order:" + orderNumber + " has been checkin successfully!");
+        return ResponseEntity.ok(new OkDTO("Order:" + orderNumber + " has been checkin successfully!"));
     }
 
     @PostMapping("/checkout")
     public ResponseEntity<?> checkout(@RequestParam String orderNumber) {
         orderService.checkout(orderNumber);
-        return ResponseEntity.ok("Order:" + orderNumber + " has been checkout successfully!");
+        return ResponseEntity.ok(new OkDTO("Order:" + orderNumber + " has been checkout successfully!"));
     }
 
     @PostMapping("/cancel")
     public ResponseEntity<?> cancel(@RequestParam String orderNumber) {
         orderService.cancel(orderNumber);
-        return ResponseEntity.ok("Order:" + orderNumber + " has been canceled successfully!");
+        return ResponseEntity.ok(new OkDTO("Order:" + orderNumber + " has been canceled successfully!"));
     }
 
     @GetMapping("/list")
-    public ResponseEntity<?> listOrders(@RequestParam String orderNumber, @RequestParam String customerName, @RequestParam String customerEmail, @RequestParam String status) {
-        return ResponseEntity.ok(orderService.list(orderNumber, customerName, customerEmail, status));
+    public ResponseEntity<?> listOrders(@RequestParam String orderNumber,
+                                        @RequestParam String roomNumber,
+                                        @RequestParam String username,
+                                        @RequestParam String customerName,
+                                        @RequestParam String customerEmail,
+                                        @RequestParam String status,
+                                        @RequestParam String checkInDate,
+                                        @RequestParam String checkOutDate,
+                                        @RequestParam Integer page) {
+        return ResponseEntity.ok(orderService.list(orderNumber, roomNumber, username, customerName, customerEmail, status, checkInDate, checkOutDate, page));
+    }
+
+    @GetMapping("/show")
+    public ResponseEntity<?> show(@RequestParam String orderNumber) {
+        return ResponseEntity.ok(orderService.getOrderDetails(orderNumber));
     }
 }

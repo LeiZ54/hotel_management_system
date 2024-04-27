@@ -23,6 +23,9 @@ public class Order {
     @Column(nullable = false)
     private String roomNumber;
 
+    @Column()
+    private String username;
+
     @Column(nullable = false)
     private String customerName;
 
@@ -45,8 +48,9 @@ public class Order {
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
-    public Order(String roomNumber, String customerName, String customerEmail, LocalDate checkInDate, LocalDate checkOutDate, String orderNumber) {
+    public Order(String roomNumber, String username, String customerName, String customerEmail, LocalDate checkInDate, LocalDate checkOutDate, String orderNumber) {
         this.roomNumber = roomNumber;
+        this.username = username;
         this.customerName = customerName;
         this.customerEmail = customerEmail;
         this.checkInDate = checkInDate;
