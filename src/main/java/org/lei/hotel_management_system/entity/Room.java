@@ -20,12 +20,15 @@ public class Room {
     private String roomNumber;
 
     @Column(nullable = false)
+    private String images;
+
+    @Column(nullable = false)
     private Type type;
 
     @Column(nullable = false)
     private Boolean available;
 
-    public Room(String roomNumber, Type type){
+    public Room(String roomNumber, Type type) {
         this.roomNumber = roomNumber;
         this.type = type;
         this.available = true;
