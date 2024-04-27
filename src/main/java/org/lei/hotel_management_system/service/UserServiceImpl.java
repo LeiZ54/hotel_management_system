@@ -1,6 +1,7 @@
 package org.lei.hotel_management_system.service;
 
 import jakarta.servlet.http.HttpServletRequest;
+import org.lei.hotel_management_system.DTO.PasswordUpdateDTO;
 import org.lei.hotel_management_system.DTO.UserDetailsDTO;
 import org.lei.hotel_management_system.DTO.UserRoleUpdateDTO;
 import org.lei.hotel_management_system.DTO.UserUpdateDTO;
@@ -67,6 +68,15 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByUsername(updateRoleUser.getUsername());
         user.setRole(updateRoleUser.getRole());
         userRepository.save(user);
+    }
+
+    @Override
+    public void updatePassword(PasswordUpdateDTO updatePassword) {
+        User currentUser = getCurrentUser();
+        if (!passwordEncoder.matches(updatePassword.getOldPassword(), currentUser.getPassword()))
+            throw new RuntimeException("Password does not match!");
+        currentUser.setPassword(passwordEncoder.encode(updatePassword.getNewPassword()));
+        userRepository.save(currentUser);
     }
 
     @Override

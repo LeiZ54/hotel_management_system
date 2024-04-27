@@ -2,6 +2,7 @@ package org.lei.hotel_management_system.controller;
 
 import jakarta.validation.Valid;
 import org.lei.hotel_management_system.DTO.OkDTO;
+import org.lei.hotel_management_system.DTO.PasswordUpdateDTO;
 import org.lei.hotel_management_system.DTO.UserRoleUpdateDTO;
 import org.lei.hotel_management_system.DTO.UserUpdateDTO;
 import org.lei.hotel_management_system.service.UserServiceImpl;
@@ -30,7 +31,13 @@ public class UserController {
     @PostMapping("/update")
     public ResponseEntity<?> userUpdate(@RequestBody @Valid UserUpdateDTO updateUser) {
         userService.updateUser(updateUser);
-        return ResponseEntity.ok(new OkDTO("User deleted successfully!"));
+        return ResponseEntity.ok(new OkDTO("User updated successfully!"));
+    }
+
+    @PostMapping("/updatePassword")
+    public ResponseEntity<?> passwordUpdate(@RequestBody @Valid PasswordUpdateDTO passwordUpdateDTO) {
+        userService.updatePassword(passwordUpdateDTO);
+        return ResponseEntity.ok(new OkDTO("Password updated successfully!"));
     }
 
     @PostMapping("/delete")

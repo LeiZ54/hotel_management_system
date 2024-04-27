@@ -1,5 +1,6 @@
 package org.lei.hotel_management_system.service;
 
+import org.lei.hotel_management_system.DTO.PasswordUpdateDTO;
 import org.lei.hotel_management_system.DTO.UserDetailsDTO;
 import org.lei.hotel_management_system.DTO.UserRoleUpdateDTO;
 import org.lei.hotel_management_system.DTO.UserUpdateDTO;
@@ -14,6 +15,8 @@ public interface UserService extends UserDetailsService {
     void updateUser(UserUpdateDTO updateUser);
 
     void updateUserRole(UserRoleUpdateDTO updateRoleUser);
+
+    void updatePassword(PasswordUpdateDTO updatePassword);
 
     User getByEmail(String email);
 
