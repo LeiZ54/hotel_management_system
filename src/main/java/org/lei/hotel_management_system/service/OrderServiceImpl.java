@@ -89,7 +89,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<OrderListDTO> list(String orderNumber, String roomNumber, String username, String customerName, String customerEmail, String status, String checkInDate, String checkOutDate, Integer page) {
+    public List<OrderListDTO> list(String orderNumber, String roomNumber, String username, String customerName, String customerEmail, Status status, String checkInDate, String checkOutDate, Integer page) {
         return orderRepository.findAll((Specification<Order>) (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
             if (orderNumber != null && !orderNumber.isEmpty()) {
@@ -115,7 +115,7 @@ public class OrderServiceImpl implements OrderService {
                 predicates.add(cb.equal(root.get("customerEmail"), customerEmail));
             }
 
-            if (status != null && !status.isEmpty()) {
+            if (status != null) {
                 predicates.add(cb.equal(root.get("status"), status));
             }
 

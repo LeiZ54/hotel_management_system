@@ -7,6 +7,10 @@ import org.lei.hotel_management_system.enums.Type;
 public class RoomDetailsDTO {
     private String roomNumber;
 
+    private String images;
+
+    private Double price;
+
     private Type type;
 
     private Boolean available;

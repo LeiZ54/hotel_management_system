@@ -3,9 +3,12 @@ package org.lei.hotel_management_system.service;
 import jakarta.persistence.criteria.Predicate;
 import org.lei.hotel_management_system.DTO.RoomDetailsDTO;
 import org.lei.hotel_management_system.entity.Room;
+import org.lei.hotel_management_system.entity.RoomTypeInfo;
 import org.lei.hotel_management_system.enums.Type;
 import org.lei.hotel_management_system.repository.RoomRepository;
+import org.lei.hotel_management_system.repository.RoomTypeInfoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -17,10 +20,19 @@ public class RoomServiceImpl implements RoomService {
     @Autowired
     private RoomRepository roomRepository;
 
+    @Autowired
+    private RoomTypeInfoRepository roomTypeRepository;
+
     @Override
     public void addRoom(Room room) {
         roomRepository.save(room);
     }
+
+    @Override
+    public void addRoomTypeInfo(RoomTypeInfo info) {
+        roomTypeRepository.save(info);
+    }
+
 
     @Override
     public RoomDetailsDTO getRoomDetailsByRoomNumber(String roomNumber) {
@@ -42,7 +54,7 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public List<RoomDetailsDTO> list(String roomNumber, Type type, Boolean available) {
+    public List<RoomDetailsDTO> list(String roomNumber, Type type, Boolean available, Integer page) {
         return roomRepository.findAll((Specification<Room>) (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
 
@@ -58,12 +70,14 @@ public class RoomServiceImpl implements RoomService {
                 predicates.add(cb.equal(root.get("available"), available));
             }
             return cb.and(predicates.toArray(new Predicate[0]));
-        }).stream().map(this::convertRoomToRoomDetailsDTO).toList();
+        }, PageRequest.of(page, 10)).stream().map(this::convertRoomToRoomDetailsDTO).toList();
     }
 
     private RoomDetailsDTO convertRoomToRoomDetailsDTO(Room room) {
         RoomDetailsDTO roomDetailsDTO = new RoomDetailsDTO();
         roomDetailsDTO.setRoomNumber(room.getRoomNumber());
+        roomDetailsDTO.setPrice(roomTypeRepository.findByType(room.getType()).getPrice());
+        roomDetailsDTO.setImages(roomTypeRepository.findByType(room.getType()).getImages());
         roomDetailsDTO.setAvailable(room.getAvailable());
         roomDetailsDTO.setType(room.getType());
         return roomDetailsDTO;

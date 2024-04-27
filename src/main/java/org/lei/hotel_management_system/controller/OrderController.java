@@ -1,5 +1,6 @@
 package org.lei.hotel_management_system.controller;
 
+import jakarta.annotation.Nullable;
 import org.lei.hotel_management_system.DTO.OkDTO;
 import org.lei.hotel_management_system.DTO.OrderCreateDTO;
 import org.lei.hotel_management_system.entity.Order;
@@ -45,7 +46,7 @@ public class OrderController {
                                         @RequestParam String username,
                                         @RequestParam String customerName,
                                         @RequestParam String customerEmail,
-                                        @RequestParam String status,
+                                        @RequestParam @Nullable Status status,
                                         @RequestParam String checkInDate,
                                         @RequestParam String checkOutDate,
                                         @RequestParam Integer page) {

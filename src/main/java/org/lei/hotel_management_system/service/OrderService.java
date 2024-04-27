@@ -16,7 +16,7 @@ public interface OrderService {
 
     void changeStatus(String orderNumber, Status status);
 
-    List<OrderListDTO> list(String orderNumber, String roomNumber, String username, String customerName, String customerEmail, String status, String checkInDate, String checkOutDate, Integer page);
+    List<OrderListDTO> list(String orderNumber, String roomNumber, String username, String customerName, String customerEmail, Status status, String checkInDate, String checkOutDate, Integer page);
 
     OrderDetailsDTO getOrderDetails(String orderNumber);
 

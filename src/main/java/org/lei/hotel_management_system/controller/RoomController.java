@@ -1,5 +1,6 @@
 package org.lei.hotel_management_system.controller;
 
+import jakarta.annotation.Nullable;
 import org.lei.hotel_management_system.enums.Type;
 import org.lei.hotel_management_system.service.RoomServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,7 @@ public class RoomController {
 
     //暂时回传room实体的全部内容，以后再增加回传内容
     @GetMapping("/list")
-    public ResponseEntity<?> list(@RequestParam String roomNumber, @RequestParam Type type, @RequestParam Boolean available) {
-        return ResponseEntity.ok(roomService.list(roomNumber, type, available));
+    public ResponseEntity<?> list(@RequestParam String roomNumber, @RequestParam @Nullable Type type, @RequestParam @Nullable Boolean available, @RequestParam Integer page) {
+        return ResponseEntity.ok(roomService.list(roomNumber, type, available, page));
     }
 }

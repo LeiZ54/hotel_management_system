@@ -10,24 +10,24 @@ import org.lei.hotel_management_system.enums.Type;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "rooms")
-public class Room {
+@Table(name = "room_type_infos")
+public class RoomTypeInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(nullable = false, unique = true)
-    private String roomNumber;
+    @Column(nullable = false)
+    private String images;
 
     @Column(nullable = false)
+    private Double price;
+
+    @Column(nullable = false, unique = true)
     private Type type;
 
-    @Column(nullable = false)
-    private Boolean available;
-
-    public Room(String roomNumber, Type type) {
-        this.roomNumber = roomNumber;
+    public RoomTypeInfo(String images, Double price, Type type){
+        this.images = images;
+        this.price = price;
         this.type = type;
-        this.available = true;
     }
 }
