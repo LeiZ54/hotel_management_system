@@ -44,11 +44,14 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public void updateOrder(OrderUpdateDTO updateOrder) {
+        if (userService.getCurrentUser().getRole() == Role.CUSTOMER)
+            throw new RuntimeException("Customer is not allowed to update this order!");
         Order order = orderRepository.findByOrderNumber(updateOrder.getOrderNumber());
         if (order == null) throw new RuntimeException("Order number does not exist");
-        if (updateOrder.getCustomerName() != null) order.setCustomerName(updateOrder.getCustomerName());
-        if (updateOrder.getCustomerEmail() != null) order.setCustomerEmail(updateOrder.getCustomerEmail());
-        if (updateOrder.getStatus() != null) order.setStatus(updateOrder.getStatus());
+        if (updateOrder.getCustomerName() != null && !updateOrder.getCustomerName().isEmpty())
+            order.setCustomerName(updateOrder.getCustomerName());
+        if (updateOrder.getCustomerEmail() != null && !updateOrder.getCustomerEmail().isEmpty())
+            order.setCustomerEmail(updateOrder.getCustomerEmail());
         orderRepository.save(order);
     }
 

@@ -3,6 +3,7 @@ package org.lei.hotel_management_system.controller;
 import jakarta.annotation.Nullable;
 import org.lei.hotel_management_system.DTO.OkDTO;
 import org.lei.hotel_management_system.DTO.OrderCreateDTO;
+import org.lei.hotel_management_system.DTO.OrderUpdateDTO;
 import org.lei.hotel_management_system.entity.Order;
 import org.lei.hotel_management_system.enums.Status;
 import org.lei.hotel_management_system.service.OrderService;
@@ -20,6 +21,12 @@ public class OrderController {
     public ResponseEntity<?> orderCreate(@RequestBody OrderCreateDTO createOrder) {
         Order order = orderService.addOrder(orderService.convertOrderDTOToOrder(createOrder));
         return ResponseEntity.ok(new OkDTO("Order:" + order.getOrderNumber() + " has been created successfully!"));
+    }
+
+    @PostMapping("/update")
+    public ResponseEntity<?> orderUpdate(@RequestBody OrderUpdateDTO updateOrder) {
+        orderService.updateOrder(updateOrder);
+        return ResponseEntity.ok(new OkDTO("Order:" + updateOrder.getOrderNumber() + " has been updated successfully!"));
     }
 
     @PostMapping("/checkin")

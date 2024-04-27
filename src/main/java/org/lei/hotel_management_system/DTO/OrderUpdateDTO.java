@@ -16,6 +16,4 @@ public class OrderUpdateDTO {
 
     @Email(message = "Email must be a valid email address")
     private String customerEmail;
-
-    private Status status;
 }
