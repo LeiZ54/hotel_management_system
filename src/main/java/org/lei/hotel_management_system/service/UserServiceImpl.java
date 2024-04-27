@@ -1,7 +1,5 @@
 package org.lei.hotel_management_system.service;
 
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.Predicate;
 import jakarta.servlet.http.HttpServletRequest;
 import org.lei.hotel_management_system.DTO.UserDetailsDTO;
 import org.lei.hotel_management_system.DTO.UserRoleUpdateDTO;
@@ -11,7 +9,6 @@ import org.lei.hotel_management_system.enums.Role;
 import org.lei.hotel_management_system.repository.UserRepository;
 import org.lei.hotel_management_system.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,8 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -76,50 +71,25 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDetailsDTO getCurrentUserDetails() {
-        try {
-            return convertUserToUserDetailsDTO(getCurrentUser());
-        }catch (Exception e){
-            throw new RuntimeException("Invalid token!");
-        }
+        return convertUserToUserDetailsDTO(getCurrentUser());
     }
 
     @Override
-    public List<UserDetailsDTO> list(String username, String email, String phoneNumber, String realName, List<String> roles) {
+    public UserDetailsDTO getUserDetailsByUsername(String username) {
         if (getCurrentUser().getRole().equals(Role.CUSTOMER))
-            throw new RuntimeException("You cannot access user list!");
-        return userRepository.findAll((Specification<User>) (root, query, cb) -> {
-            List<Predicate> predicates = new ArrayList<>();
-
-            if (username != null && !username.isEmpty()) {
-                predicates.add(cb.like(root.get("username"), "%" + username + "%"));
-            }
-
-            if (email != null && !email.isEmpty()) {
-                predicates.add(cb.like(root.get("email"), "%" + email + "%"));
-            }
-
-            if (phoneNumber != null && !phoneNumber.isEmpty()) {
-                predicates.add(cb.like(root.get("phoneNumber"), "%" + phoneNumber + "%"));
-            }
-
-            if (realName != null && !realName.isEmpty()) {
-                predicates.add(cb.like(root.get("realName"), "%" + realName + "%"));
-            }
-
-            if (roles != null && !roles.isEmpty()) {
-                CriteriaBuilder.In<String> roleIn = cb.in(root.get("role"));
-                roles.forEach(roleIn::value);
-                predicates.add(roleIn);
-            }
-            return cb.and(predicates.toArray(new Predicate[0]));
-        }).stream().map(this::convertUserToUserDetailsDTO).toList();
+            throw new RuntimeException("You do not have permission to load this user!");
+        return convertUserToUserDetailsDTO(userRepository.findByUsername(username));
     }
 
     @Override
     public User getCurrentUser() {
         HttpServletRequest request = ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes())).getRequest();
         String token = request.getHeader("Authorization");
-        return userRepository.findByUsername(jwtUtil.getUsernameFromToken(token));
+        try {
+            return userRepository.findByUsername(jwtUtil.getUsernameFromToken(token));
+        } catch (Exception e) {
+            throw new RuntimeException("Invalid token!");
+        }
     }
 
     @Override

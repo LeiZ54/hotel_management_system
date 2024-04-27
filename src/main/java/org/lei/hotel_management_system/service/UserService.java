@@ -6,8 +6,6 @@ import org.lei.hotel_management_system.DTO.UserUpdateDTO;
 import org.lei.hotel_management_system.entity.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
-import java.util.List;
-
 public interface UserService extends UserDetailsService {
     User addUser(User user);
 
@@ -21,7 +19,7 @@ public interface UserService extends UserDetailsService {
 
     UserDetailsDTO getCurrentUserDetails();
 
-    List<UserDetailsDTO> list(String username, String email, String phoneNumber, String realName, List<String> roles);
+    UserDetailsDTO getUserDetailsByUsername(String username);
 
     User getCurrentUser();
 }
