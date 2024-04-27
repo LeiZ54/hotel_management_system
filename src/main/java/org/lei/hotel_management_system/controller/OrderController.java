@@ -3,6 +3,7 @@ package org.lei.hotel_management_system.controller;
 import org.lei.hotel_management_system.DTO.OkDTO;
 import org.lei.hotel_management_system.DTO.OrderCreateDTO;
 import org.lei.hotel_management_system.entity.Order;
+import org.lei.hotel_management_system.enums.Status;
 import org.lei.hotel_management_system.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,24 +18,24 @@ public class OrderController {
     @PostMapping("/create")
     public ResponseEntity<?> orderCreate(@RequestBody OrderCreateDTO createOrder) {
         Order order = orderService.addOrder(orderService.convertOrderDTOToOrder(createOrder));
-        return ResponseEntity.ok(new OkDTO("Order:" + order.getOrderNumber() + "has been created successfully!"));
+        return ResponseEntity.ok(new OkDTO("Order:" + order.getOrderNumber() + " has been created successfully!"));
     }
 
     @PostMapping("/checkin")
     public ResponseEntity<?> checkin(@RequestParam String orderNumber) {
-        orderService.checkin(orderNumber);
-        return ResponseEntity.ok(new OkDTO("Order:" + orderNumber + " has been checkin successfully!"));
+        orderService.changeStatus(orderNumber, Status.CHECKED);
+        return ResponseEntity.ok(new OkDTO("Order:" + orderNumber + " has been checked in successfully!"));
     }
 
     @PostMapping("/checkout")
     public ResponseEntity<?> checkout(@RequestParam String orderNumber) {
-        orderService.checkout(orderNumber);
-        return ResponseEntity.ok(new OkDTO("Order:" + orderNumber + " has been checkout successfully!"));
+        orderService.changeStatus(orderNumber, Status.FINISHED);
+        return ResponseEntity.ok(new OkDTO("Order:" + orderNumber + " has been checked out successfully!"));
     }
 
     @PostMapping("/cancel")
     public ResponseEntity<?> cancel(@RequestParam String orderNumber) {
-        orderService.cancel(orderNumber);
+        orderService.changeStatus(orderNumber, Status.CANCELED);
         return ResponseEntity.ok(new OkDTO("Order:" + orderNumber + " has been canceled successfully!"));
     }
 

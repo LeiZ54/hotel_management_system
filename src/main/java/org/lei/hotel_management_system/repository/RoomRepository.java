@@ -17,4 +17,5 @@ public interface RoomRepository extends JpaRepository<Room, Integer> , JpaSpecif
     void truncateTable();
 
     Room getByRoomNumber(String roomNumber);
+
 }

@@ -5,6 +5,7 @@ import org.lei.hotel_management_system.DTO.OrderDetailsDTO;
 import org.lei.hotel_management_system.DTO.OrderListDTO;
 import org.lei.hotel_management_system.DTO.OrderUpdateDTO;
 import org.lei.hotel_management_system.entity.Order;
+import org.lei.hotel_management_system.enums.Status;
 
 import java.util.List;
 
@@ -13,11 +14,7 @@ public interface OrderService {
 
     void updateOrder(OrderUpdateDTO order);
 
-    void checkin(String orderNumber);
-
-    void checkout(String orderNumber);
-
-    void cancel(String orderNumber);
+    void changeStatus(String orderNumber, Status status);
 
     List<OrderListDTO> list(String orderNumber, String roomNumber, String username, String customerName, String customerEmail, String status, String checkInDate, String checkOutDate, Integer page);
 

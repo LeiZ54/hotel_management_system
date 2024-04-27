@@ -18,15 +18,27 @@ public class RoomServiceImpl implements RoomService {
     private RoomRepository roomRepository;
 
     @Override
-    public Room addRoom(Room room) {
-        return roomRepository.save(room);
+    public void addRoom(Room room) {
+        roomRepository.save(room);
     }
 
     @Override
-    public RoomDetailsDTO getByRoomNumber(String roomNumber) {
+    public RoomDetailsDTO getRoomDetailsByRoomNumber(String roomNumber) {
         Room room = roomRepository.getByRoomNumber(roomNumber);
         if (room == null) throw new RuntimeException("Room not found!");
         return convertRoomToRoomDetailsDTO(room);
+    }
+
+    @Override
+    public Room getByRoomNumber(String roomNumber) {
+        return roomRepository.getByRoomNumber(roomNumber);
+    }
+
+    @Override
+    public void setAvailable(String roomNumber, boolean available) {
+        Room room = roomRepository.getByRoomNumber(roomNumber);
+        room.setAvailable(available);
+        roomRepository.save(room);
     }
 
     @Override

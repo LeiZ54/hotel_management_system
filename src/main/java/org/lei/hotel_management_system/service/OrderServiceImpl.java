@@ -53,27 +53,39 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void checkin(String orderNumber) {
-        OrderUpdateDTO updateOrder = new OrderUpdateDTO();
-        updateOrder.setOrderNumber(orderNumber);
-        updateOrder.setStatus(Status.CHECKED);
-        updateOrder(updateOrder);
-    }
+    public void changeStatus(String orderNumber, Status status) {
+        User currentUser = userService.getCurrentUser();
 
-    @Override
-    public void checkout(String orderNumber) {
-        OrderUpdateDTO updateOrder = new OrderUpdateDTO();
-        updateOrder.setOrderNumber(orderNumber);
-        updateOrder.setStatus(Status.FINISHED);
-        updateOrder(updateOrder);
-    }
+        if (currentUser.getRole() == Role.CUSTOMER && (status == Status.CHECKED || status == Status.FINISHED))
+            throw new RuntimeException("Customer is not allowed to change the status of this order!");
 
-    @Override
-    public void cancel(String orderNumber) {
-        OrderUpdateDTO updateOrder = new OrderUpdateDTO();
-        updateOrder.setOrderNumber(orderNumber);
-        updateOrder.setStatus(Status.CANCELED);
-        updateOrder(updateOrder);
+        Order order = orderRepository.findByOrderNumber(orderNumber);
+        if (order == null)
+            throw new RuntimeException("Order does not exist!");
+
+        if (status == Status.CHECKED) {
+            // Order can only be checked when current status equals to CREATED
+            if (order.getStatus() != Status.CREATED)
+                throw new RuntimeException("This order is not available to be checked in!");
+            roomService.setAvailable(order.getRoomNumber(), false);
+        }
+
+        if (status == Status.FINISHED) {
+            // Order can only be checked when current status equals to CHECKED
+            if (order.getStatus() != Status.CHECKED)
+                throw new RuntimeException("This order is not available to be checked out!");
+            roomService.setAvailable(order.getRoomNumber(), true);
+        }
+
+        if (status == Status.CANCELED) {
+            if ((order.getStatus() != Status.CREATED))
+                throw new RuntimeException("This order is not available to be canceled!");
+            if (currentUser.getRole() == Role.CUSTOMER && !currentUser.getUsername().equals(order.getUsername()))
+                throw new RuntimeException("You are not allowed to cancel this order!");
+        }
+
+        order.setStatus(status);
+        orderRepository.save(order);
     }
 
     @Override

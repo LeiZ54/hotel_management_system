@@ -18,7 +18,7 @@ public class RoomController {
     //暂时回传room实体的全部内容，以后再增加回传内容
     @GetMapping("/show")
     public ResponseEntity<?> show(String roomNumber) {
-        return ResponseEntity.ok(roomService.getByRoomNumber(roomNumber));
+        return ResponseEntity.ok(roomService.getRoomDetailsByRoomNumber(roomNumber));
     }
 
     //暂时回传room实体的全部内容，以后再增加回传内容
