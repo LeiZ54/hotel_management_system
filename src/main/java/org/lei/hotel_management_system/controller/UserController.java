@@ -24,8 +24,8 @@ public class UserController {
 
     //前端应该传递token
     @GetMapping("/show")
-    public ResponseEntity<?> userShow(@RequestParam String username) {
-        return ResponseEntity.ok(userService.getUserDetails(username));
+    public ResponseEntity<?> userShow() {
+        return ResponseEntity.ok(userService.getCurrentUserDetails());
     }
 
     @PostMapping("/update")

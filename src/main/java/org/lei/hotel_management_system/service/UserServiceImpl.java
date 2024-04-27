@@ -74,11 +74,9 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
     }
 
-    public UserDetailsDTO getUserDetails(String username) {
-        if (getCurrentUser().getRole().equals(Role.CUSTOMER) && !username.equals(getCurrentUser().getUsername())) {
-            throw new RuntimeException("You cannot access this user!");
-        }
-        return convertUserToUserDetailsDTO((User) loadUserByUsername(username));
+    @Override
+    public UserDetailsDTO getCurrentUserDetails() {
+        return convertUserToUserDetailsDTO(getCurrentUser());
     }
 
     @Override

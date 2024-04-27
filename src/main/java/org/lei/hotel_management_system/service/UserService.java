@@ -19,7 +19,7 @@ public interface UserService extends UserDetailsService {
 
     User getByEmail(String email);
 
-    UserDetailsDTO getUserDetails(String username);
+    UserDetailsDTO getCurrentUserDetails();
 
     List<UserDetailsDTO> list(String username, String email, String phoneNumber, String realName, List<String> roles);
 
