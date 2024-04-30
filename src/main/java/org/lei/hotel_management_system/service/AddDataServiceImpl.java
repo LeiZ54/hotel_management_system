@@ -34,32 +34,24 @@ public class AddDataServiceImpl implements AddDataService {
     private RoomTypeInfoRepository roomTypeInfoRepository;
 
     public void add() {
-        userRepository.truncateTable();
         roomTypeInfoRepository.truncateTable();
         roomRepository.truncateTable();
         ordersRepository.truncateTable();
 
-        User adminUser = new User("LeiZ", "12345", "lei zhu", "piggy@123.com", "8575447940");
-        adminUser.setRole(Role.ADMIN);
-        userService.addUser(adminUser);
-        User staffUser = new User("fatty", "12345", "Yuheng Xia", "fatty@123.com", "8575447941");
-        staffUser.setRole(Role.STAFF);
-        userService.addUser(staffUser);
-        userService.addUser(new User("Song", "12345", "Zhiyao", "zhiyao@123.com", "8575447942"));
-        userService.addUser(new User("Big", "12345", "Boyuan", "boyuan@123.com", "8575447943"));
-        userService.addUser(new User("hahaha", "12345", "kaixin", "happy@123.com", "8575447944"));
-
         ArrayList<String> singleRoomImages = new ArrayList<>();
-        singleRoomImages.add("https://s2.loli.net/2024/04/28/Xnkfm8olOvDcGTN.jpg");
-        singleRoomImages.add("https://s2.loli.net/2024/04/28/ZGc7p48eIg1JrTi.webp");
+        singleRoomImages.add("https://img2.imgtp.com/2024/04/30/YqLewVeO.jpg");
+        singleRoomImages.add("https://img2.imgtp.com/2024/04/30/zPBmYOHd.jpg");
+        singleRoomImages.add("https://img2.imgtp.com/2024/04/30/pSsMTFuP.jpg");
 
         ArrayList<String> doubleRoomImages = new ArrayList<>();
-        doubleRoomImages.add("https://s2.loli.net/2024/04/28/RbncmSt4eqsHgCr.jpg");
-        doubleRoomImages.add("https://s2.loli.net/2024/04/28/RbncmSt4eqsHgCr.jpg");
+        doubleRoomImages.add("https://img2.imgtp.com/2024/04/30/5EqUHOto.jpg");
+        doubleRoomImages.add("https://img2.imgtp.com/2024/04/30/vcqLii0i.jpg");
+        doubleRoomImages.add("https://img2.imgtp.com/2024/04/30/lCnLlNrZ.jpg");
 
         ArrayList<String> suiteRoomImages = new ArrayList<>();
-        suiteRoomImages.add("https://s2.loli.net/2024/04/28/sDH67qf2pVcKmEb.jpg");
-        suiteRoomImages.add("https://s2.loli.net/2024/04/28/wrWQ9RCyKqgx5uG.jpg");
+        suiteRoomImages.add("https://img2.imgtp.com/2024/04/30/J9bT6hJH.jpg");
+        suiteRoomImages.add("https://img2.imgtp.com/2024/04/30/5BhdgrXM.jpg");
+        suiteRoomImages.add("https://img2.imgtp.com/2024/04/30/KrMMHFIW.jpg");
 
         roomService.addRoomTypeInfo(new RoomTypeInfo(Arrays.toString(singleRoomImages.toArray()), 149.00, Type.SINGLE));
         roomService.addRoomTypeInfo(new RoomTypeInfo(Arrays.toString(doubleRoomImages.toArray()), 189.00, Type.DOUBLE));
