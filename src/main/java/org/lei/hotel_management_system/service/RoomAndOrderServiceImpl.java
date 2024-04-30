@@ -2,6 +2,7 @@ package org.lei.hotel_management_system.service;
 
 import jakarta.persistence.criteria.Predicate;
 import org.lei.hotel_management_system.entity.Order;
+import org.lei.hotel_management_system.enums.Status;
 import org.lei.hotel_management_system.repository.OrderRepository;
 import org.lei.hotel_management_system.repository.RoomRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +10,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -21,17 +22,23 @@ public class RoomAndOrderServiceImpl implements RoomAndOrderService {
 
     @Override
     public List<String> findUnavailableRoomNumbersByDates(String checkInDate, String checkOutDate) {
-        return orderRepository.findAll((Specification<Order>) (root, query, cb) -> {
-            List<Predicate> predicates = new ArrayList<>();
-            if (checkInDate != null && !checkInDate.isEmpty()) {
-                predicates.add(cb.greaterThanOrEqualTo(root.get("checkInDate"), Date.valueOf(checkInDate)));
-            }
+        if (checkInDate == null || checkInDate.isEmpty() || checkOutDate == null || checkOutDate.isEmpty()) {
+            return Collections.emptyList();
+        }
 
-            if (checkOutDate != null && !checkOutDate.isEmpty()) {
-                predicates.add(cb.lessThanOrEqualTo(root.get("checkOutDate"), Date.valueOf(checkOutDate)));
-            }
+        Specification<Order> spec = (root, query, cb) -> {
+            Predicate statusPredicate = root.get("status").in(Status.CREATED, Status.CHECKED);
+            Predicate overlapPredicate = cb.or(
+                    cb.between(root.get("checkInDate"), Date.valueOf(checkInDate), Date.valueOf(checkOutDate)),
+                    cb.between(root.get("checkOutDate"), Date.valueOf(checkInDate), Date.valueOf(checkOutDate)),
+                    cb.and(
+                            cb.lessThanOrEqualTo(root.get("checkInDate"), Date.valueOf(checkInDate)),
+                            cb.greaterThanOrEqualTo(root.get("checkOutDate"), Date.valueOf(checkOutDate))
+                    )
+            );
+            return cb.and(statusPredicate, overlapPredicate);
+        };
 
-            return cb.and(predicates.toArray(new Predicate[0]));
-        }).stream().map(Order::getRoomNumber).toList();
+        return orderRepository.findAll(spec).stream().map(Order::getRoomNumber).distinct().toList();
     }
 }

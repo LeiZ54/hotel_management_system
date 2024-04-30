@@ -72,6 +72,7 @@ public class RoomServiceImpl implements RoomService {
                     throw new RuntimeException("Your check in date is before today!");
                 if (Date.valueOf(checkOutDate).before(Date.valueOf(checkInDate)))
                     throw new RuntimeException("Your check in date is after your check out date!");
+                System.out.println(roomAndOrderService.findUnavailableRoomNumbersByDates(checkInDate, checkOutDate));
                 predicates.add(cb.not(root.get("roomNumber").in(roomAndOrderService.findUnavailableRoomNumbersByDates(checkInDate, checkOutDate))));
             }
 
