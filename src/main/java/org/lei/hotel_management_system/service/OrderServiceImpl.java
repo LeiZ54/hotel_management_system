@@ -12,6 +12,7 @@ import org.lei.hotel_management_system.enums.Status;
 import org.lei.hotel_management_system.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -132,7 +133,7 @@ public class OrderServiceImpl implements OrderService {
             }
 
             return cb.and(predicates.toArray(new Predicate[0]));
-        }, PageRequest.of(page, 10)).stream().map(this::convertOrderToOrderListDTO).toList();
+        }, PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "createdAt"))).stream().map(this::convertOrderToOrderListDTO).toList();
     }
 
     @Override
