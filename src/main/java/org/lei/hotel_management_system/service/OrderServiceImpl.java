@@ -162,8 +162,8 @@ public class OrderServiceImpl implements OrderService {
         return orderRepository.findAll((Specification<Order>) (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
             predicates.add(cb.equal(root.get("roomNumber"), roomNumber));
-            predicates.add(cb.greaterThanOrEqualTo(root.get("checkInDate"), checkInDate));
-            predicates.add(cb.lessThanOrEqualTo(root.get("checkOutDate"), checkOutDate));
+            predicates.add(cb.greaterThan(root.get("checkInDate"), checkInDate));
+            predicates.add(cb.lessThan(root.get("checkOutDate"), checkOutDate));
             predicates.add(cb.in(root.get("status")).value(Status.CREATED).value(Status.CHECKED));
             return cb.and(predicates.toArray(new Predicate[0]));
         }).stream().map(this::convertOrderToOrderDetailsDTO).toList().isEmpty();

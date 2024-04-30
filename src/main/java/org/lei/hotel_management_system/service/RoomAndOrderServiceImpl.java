@@ -32,8 +32,8 @@ public class RoomAndOrderServiceImpl implements RoomAndOrderService {
                     cb.between(root.get("checkInDate"), Date.valueOf(checkInDate), Date.valueOf(checkOutDate)),
                     cb.between(root.get("checkOutDate"), Date.valueOf(checkInDate), Date.valueOf(checkOutDate)),
                     cb.and(
-                            cb.lessThanOrEqualTo(root.get("checkInDate"), Date.valueOf(checkInDate)),
-                            cb.greaterThanOrEqualTo(root.get("checkOutDate"), Date.valueOf(checkOutDate))
+                            cb.lessThan(root.get("checkInDate"), Date.valueOf(checkInDate)),
+                            cb.greaterThan(root.get("checkOutDate"), Date.valueOf(checkOutDate))
                     )
             );
             return cb.and(statusPredicate, overlapPredicate);
