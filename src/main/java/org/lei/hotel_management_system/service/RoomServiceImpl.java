@@ -2,6 +2,7 @@ package org.lei.hotel_management_system.service;
 
 import jakarta.persistence.criteria.Predicate;
 import org.lei.hotel_management_system.DTO.RoomDetailsDTO;
+import org.lei.hotel_management_system.DTO.RoomTypeListDTO;
 import org.lei.hotel_management_system.entity.Room;
 import org.lei.hotel_management_system.entity.RoomTypeInfo;
 import org.lei.hotel_management_system.enums.Type;
@@ -12,6 +13,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +25,12 @@ public class RoomServiceImpl implements RoomService {
 
     @Autowired
     private RoomTypeInfoRepository roomTypeRepository;
+
+    @Autowired
+    private RoomTypeInfoRepository roomTypeInfoRepository;
+
+    @Autowired
+    private RoomAndOrderService roomAndOrderService;
 
     @Override
     public void addRoom(Room room) {
@@ -54,9 +63,17 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public List<RoomDetailsDTO> list(String roomNumber, Type type, Boolean available, Integer page) {
+    public List<RoomDetailsDTO> list(String roomNumber, Type type, Boolean available, String checkInDate, String checkOutDate, Integer page) {
         return roomRepository.findAll((Specification<Room>) (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
+
+            if (checkInDate != null && !checkInDate.isEmpty() && checkOutDate != null && !checkOutDate.isEmpty()) {
+                if (Date.valueOf(checkInDate).before(Date.valueOf(LocalDate.now())))
+                    throw new RuntimeException("Your check in date is before today!");
+                if (Date.valueOf(checkOutDate).before(Date.valueOf(checkInDate)))
+                    throw new RuntimeException("Your check in date is after your check out date!");
+                predicates.add(cb.not(root.get("roomNumber").in(roomAndOrderService.findUnavailableRoomNumbersByDates(checkInDate, checkOutDate))));
+            }
 
             if (roomNumber != null && !roomNumber.isEmpty()) {
                 predicates.add(cb.equal(root.get("roomNumber"), roomNumber));
@@ -73,6 +90,11 @@ public class RoomServiceImpl implements RoomService {
         }, PageRequest.of(page, 10)).stream().map(this::convertRoomToRoomDetailsDTO).toList();
     }
 
+    @Override
+    public List<RoomTypeListDTO> typeList() {
+        return roomTypeInfoRepository.findAll().stream().map(this::convertRoomTypeToRoomTypeListDTO).toList();
+    }
+
     private RoomDetailsDTO convertRoomToRoomDetailsDTO(Room room) {
         RoomDetailsDTO roomDetailsDTO = new RoomDetailsDTO();
         roomDetailsDTO.setRoomNumber(room.getRoomNumber());
@@ -81,6 +103,14 @@ public class RoomServiceImpl implements RoomService {
         roomDetailsDTO.setAvailable(room.getAvailable());
         roomDetailsDTO.setType(room.getType());
         return roomDetailsDTO;
+    }
+
+    private RoomTypeListDTO convertRoomTypeToRoomTypeListDTO(RoomTypeInfo roomTypeInfo) {
+        RoomTypeListDTO roomTypeListDTO = new RoomTypeListDTO();
+        roomTypeListDTO.setType(roomTypeInfo.getType());
+        roomTypeListDTO.setPrice(roomTypeInfo.getPrice());
+        roomTypeListDTO.setImages(roomTypeInfo.getImages());
+        return roomTypeListDTO;
     }
 
 }

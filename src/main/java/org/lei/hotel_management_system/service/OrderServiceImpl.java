@@ -106,6 +106,7 @@ public class OrderServiceImpl implements OrderService {
             if (userService.getCurrentUser().getRole().equals(Role.CUSTOMER)) {
                 predicates.add(cb.equal(root.get("username"), userService.getCurrentUser().getUsername()));
             }
+
             if (username != null && !username.isEmpty()) {
                 predicates.add(cb.equal(root.get("username"), username));
             }
